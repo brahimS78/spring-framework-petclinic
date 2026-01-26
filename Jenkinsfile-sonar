@@ -10,7 +10,7 @@ pipeline {
         PROJECT_KEY = "KAN"
     }
     options {
-        parallelAlwaysFailFast()
+        parallelsAlwaysFailFast()
     }
     stages {
         parallel {
