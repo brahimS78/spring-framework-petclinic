@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    environment {
+        // On définit le nom du JDK que l'on souhaite utiliser
+        // Ce nom doit correspondre exactement à celui dans "Global Tool Configuration"
+        JDK_NAME = 'Corretto-17'
+    }
+
+    stages {
+        stage('Initialize JDK') {
+            steps {
+                script {
+                    // 1. Récupération du chemin du JDK via Jenkins Tool
+                    def javaPath = tool name: "${JDK_NAME}", type: 'jdk'
+
+                    // 2. Injection de JAVA_HOME et mise à jour du PATH
+                    withEnv(["JAVA_HOME=${javaPath}", "PATH+JAVA=${javaPath}/bin"]) {
+
+                        // Test de validation
+                        sh 'echo "JAVA_HOME is: $JAVA_HOME"'
+                        sh 'java -version'
+
+                        // Votre build Maven ou Gradle doit être à l'intérieur de ce bloc
+                        sh 'mvn clean package'
+                    }
+                }
+            }
+        }
+    }
+}
