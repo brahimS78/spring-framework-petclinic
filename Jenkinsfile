@@ -12,7 +12,7 @@ pipeline {
                     // Récupère dynamiquement le chemin du JAVA_HOME configuré
                     def javaHome = tool name: 'Corretto-17', type: 'jdk'
                     // Trigger de sécurité : force le chmod avant toute action
-                    sh "chmod +x ${javaHome}/bin/java"
+                    sh "chmod +x ${javaHome}/bin/*"
                 }
                 sh 'java -version'
             }
