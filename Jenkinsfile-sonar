@@ -5,37 +5,21 @@ pipeline {
         maven "Maven3.9.12"
         jdk 'Corretto-17'
     }
-    environment {
-        // Configuration générale
-        PROJECT_KEY = "KAN"
-    }
-    options {
-        parallelsAlwaysFailFast()
-    }
+
     stages {
         stage('Build Petclinic') {
-            parallel {
-                stage('Build Petclinic Checkstyle') {
-                    steps {
-                        sh 'mvn clean package checkstyle:checkstyle'
-                    }
+            steps {
+                // Analyse statique du code
+                withSonarQubeEnv('SonarQube') {
+                    sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:sonar package"
                 }
-
-                stage('Q/A Analysis (SonarQube)') {
-                    steps {
-                        // Analyse statique du code
-                        withSonarQubeEnv('SonarQube') {
-                            sh "mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:sonar package"
-                        }
-                    }
-                    post {
-                        // If Maven was able to run the tests, even if some of the test
-                        // failed,  record the test results and archive the jar file.
-                        success {
-                            junit '**/target/surefire-reports/TEST-*.xml'
-                            archiveArtifacts 'target/*.war'
-                        }
-                    }
+            }
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed,  record the test results and archive the jar file.
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.war'
                 }
             }
         }
