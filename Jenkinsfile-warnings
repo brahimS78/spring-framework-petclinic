@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build & Analysis') {
+            steps {
+                // On lance la compilation et les outils d'analyse
+                // checkstyle:checkstyle et pmd:pmd génèrent les XML
+                sh 'mvn clean verify checkstyle:checkstyle pmd:pmd'
+            }
+        }
+
+        stage('Reporting Violations') {
+            steps {
+                script {
+                    // Utilisation du plugin Warnings Next Generation
+                    recordIssues(
+                        enabledForFailure: true,
+                        aggregatingResults: true,
+                        tools: [
+                            checkStyle(pattern: '**/target/checkstyle-result.xml'),
+                            pmdParser(pattern: '**/target/pmd.xml'),
+                            spotBugs(pattern: '**/target/spotbugsXml.xml'),
+                            java() // Capture aussi les warnings de compilation javac
+                        ],
+                        // Optionnel : Définir des seuils pour faire échouer le build
+                        qualityGates: [[threshold: 10, type: 'TOTAL', unstable: true]]
+                    )
+                }
+            }
+        }
+    }
+}
