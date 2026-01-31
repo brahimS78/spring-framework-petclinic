@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    tools {
+        // Install the Maven  version configured as "Maven3.9.12" and add it to the path.
+        maven "Maven3.9.12"
+        jdk 'Corretto-17'
+    }
+    environment {
+        // Recupere les
+        SHORT_COMMIT = "${env.GIT_COMMIT[0..6]}"
+        VERSION_BASE = "1.0.0"
+    }
+
+
+    stages {
+        stage('Build') {
+            steps {
+                // On nomme l'artefact avec la version et le commit
+                sh "./mvnw versions:set -DnewVersion=${VERSION_BASE}-${SHORT_COMMIT}"
+                sh "mvn clean install package"
+            }
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                    archiveArtifacts 'target/*.war'
+                }
+            }
+        }
+    }
+}
