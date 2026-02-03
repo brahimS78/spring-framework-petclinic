@@ -32,7 +32,7 @@ pipeline {
                    // """
                        sh """
                        docker build -t ${DOCKER_IMAGE}:${VERSION} .
-                       docker run -d -p 30080:8080 --name ${CONTAINER_NAME ${DOCKER_IMAGE}:${VERSION}
+                       docker run -d -p 30080:8080 --name ${CONTAINER_NAME} ${DOCKER_IMAGE}:${VERSION}
                        """
                     // Run the new container
                     //app.run("--name ${CONTAINER_NAME} -p 30080:8080")
