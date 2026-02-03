@@ -13,11 +13,11 @@ pipeline {
                 sh 'mvn clean package'
                 stash includes : 'target/*.war' , name: 'petclinic'
             }
-        }
         post {
             always {
                 cleanWs()
             }
         }
     }
+}
 }
