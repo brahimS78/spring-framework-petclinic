@@ -12,10 +12,10 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            logParser {
-            }
-        }
-    }
+//    post {
+//        always {
+//            logParser {
+//            }
+//        }
+//    }
 }
