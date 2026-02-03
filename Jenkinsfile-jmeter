@@ -8,7 +8,13 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh "jmeter -Jjmeter.save.saveservice.output_format=xml -Jjmeter.save.saveservice.response_data.on_error=true -n -t jmeter-pet.jmx  -l petclinic_result.jtl"
+                sh "jmeter -Jjmeter.save.saveservice.output_format=xml -Jjmeter.save.saveservice.response_data.on_error=true -n -t jmeter-pet.jmx  -l petclinic_result_bh.jtl"
+            }
+        }
+    }
+    post {
+        always {
+            logParser {
             }
         }
     }
