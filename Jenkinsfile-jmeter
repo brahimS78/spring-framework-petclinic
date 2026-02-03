@@ -1,0 +1,13 @@
+pipeline {
+    agent any
+    tools {
+        // Install the Maven version configured as "Maven3.9.12" and add it to the path.
+        maven "Maven3.9.12"
+        jdk 'Corretto-17'
+    }
+    stages {
+        stage('Build') {
+            sh "jmeter -Jjmeter.save.saveservice.output_format=xml -Jjmeter.save.saveservice.response_data.on_error=true -n -t petclinic_jmeter_1.jmx  -l petclinic_result.jtl
+        }
+    }
+}
