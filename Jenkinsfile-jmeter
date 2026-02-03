@@ -12,10 +12,13 @@ pipeline {
             }
         }
     }
-//    post {
-//        always {
-//            logParser {
-//            }
-//        }
-//    }
+   post {
+        always {
+            logParser ([
+                      rulesPath: 'parserules',
+                      failBuildOnError: true,
+                      unstableOnWarning: true,
+                    ])
+        }
+/    }
 }
